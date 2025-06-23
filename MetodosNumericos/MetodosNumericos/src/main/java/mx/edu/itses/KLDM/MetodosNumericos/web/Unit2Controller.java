@@ -3,6 +3,7 @@ package mx.edu.itses.KLDM.MetodosNumericos.web;
 import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.Biseccion;
+import mx.edu.itses.KLDM.MetodosNumericos.domain.PuntoFijo;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.ReglaFalsa;
 import mx.edu.itses.KLDM.MetodosNumericos.services.Funciones;
 import mx.edu.itses.KLDM.MetodosNumericos.services.UnidadIIService;
@@ -20,7 +21,8 @@ public class Unit2Controller {
     private UnidadIIService bisectionService;
      @Autowired 
         private UnidadIIService reglafalsaService;
-
+   @Autowired 
+        private UnidadIIService puntofijoService;
 
     @GetMapping("unit2/formbisection")
     public String formBisection(Model model) {
@@ -55,8 +57,23 @@ public class Unit2Controller {
 @PostMapping("unit2/solveReglaFalsa")
 public String solveReglaFalsa(ReglaFalsa reglafalsa, Model model) {
     var solveReglaFalsa = reglafalsaService.AlgoritmoReglaFalsa(reglafalsa);
-    // CAMBIO: usar "solveReglaFalsa" en lugar de "solvereglafalsa"
     model.addAttribute("solveReglaFalsa", solveReglaFalsa);
     return "unit2/reglafalsa/solveReglaFalsa";
+}
+
+// Punto Fijo
+  @GetMapping("unit2/formPuntoFijo")
+    public String formPuntoFijo(Model model) {
+
+          PuntoFijo puntofijo = new PuntoFijo();
+
+        model.addAttribute("puntofijo", puntofijo);
+        return "unit2/puntofijo/formPuntoFijo";
+    }
+@PostMapping("unit2/solvePuntoFijo")
+public String solvePuntoFijo(PuntoFijo puntofijo, Model model) {
+    var solvePuntoFijo = puntofijoService.AlgoritmoPuntoFijo(puntofijo);
+    model.addAttribute("solvePuntoFijo", solvePuntoFijo);
+    return "unit2/puntofijo/solvePuntoFijo";
 }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
-<html xmlns:th"http://www.thymleaf.org">
-      <head>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
         <title>METODOS NUMERICOS</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,36 +25,47 @@
             <div class="container-fluid">
                 <a class="navbar-brand" href="/">
                     <img th:src="@{/folder/logo.itses.png}"
-                         whidth="125"height="38"
+                         width="125" height="38"
                          class="d-inline-block align-top">
                     METODOS NUMERICOS
                 </a> 
-
             </div>
         </nav>
 
-        <div class="container">
+        <div class="container"  th:object="${puntofijo}" th:action="@{/unit2/Tabla}">
             <div class="row">
-                <img class="img-fluis w-100" th:src="@{/folder/metodosnumericos.png}"/>
+                <img class="img-fluid w-100" th:src="@{/folder/metodosnumericos.png}"/>
             </div>
         </div>
 
-        <div class="container">
-            <h1>Solucion de Ecuaciones algebraicas </h1>
-            <h2>Metodos Numericos</h2>
-            <ul class="nav flex-column">
-               
-                <li class="nav-item">
-                    <a class="nav-link" href="/unit2/formbisection">Biseccion</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/unit2/formReglaFalsa">Regla Falsa</a>
-                </li>
-                 <li class="nav-item">
-                    <a class="nav-link" href="/unit2/formPuntoFijo">Punto Fijo</a>
-                </li>
-            </ul>
-        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Xi</th>
+                    <th scope="col">GXi</th>
+                    <th scope="col">Erro estimado</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr  th:each="solve,iter:${solvePuntoFijo}">
+                    <td th:text="${iter.index}"> # de Iteracion</td>
+                    <td th:text="${solve.Xi}">Valor  Xi</td>
+                    <td th:text="${solve.GXi}"> Valor GXi</td>
+                  
+                    <td th:text="${solve.Ea}"> Error estimado actual</td>
+
+
+                    <td></td>
+
+                </tr>
+
+
+            </tbody>
+        </table>
+
+
 
     </body>
 </html>

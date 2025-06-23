@@ -3,7 +3,7 @@ package mx.edu.itses.KLDM.MetodosNumericos.services;
 import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.Biseccion;
-import mx.edu.itses.KLDM.MetodosNumericos.domain.Biseccion;
+import mx.edu.itses.KLDM.MetodosNumericos.domain.PuntoFijo;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.ReglaFalsa;
 import org.springframework.stereotype.Service;
 
@@ -118,4 +118,48 @@ public ArrayList<ReglaFalsa> AlgoritmoReglaFalsa(ReglaFalsa reglafalsa) {
     }
     return respuestaReglaFalsa;
 }
+
+ @Override
+  
+    public ArrayList<PuntoFijo> AlgoritmoPuntoFijo(PuntoFijo puntofijo) {
+    ArrayList<PuntoFijo> respuestaPuntoFijo = new ArrayList<>();
+    double Xi, XiAnterior = 0, GXi, Ea = 100;
+    
+    // Obtener el valor inicial
+    Xi = puntofijo.getXi();
+    
+    // Iteraciones del método de punto fijo
+    for (int i = 1; i <= puntofijo.getIteracionesMaximas(); i++) {
+        // Evaluar g(xi) - aquí necesitas la función g(x)
+        GXi = Funciones.Ecuacion(puntofijo.getFX(), Xi);
+        
+        // Calcular error relativo (excepto en la primera iteración)
+        if (i != 1) {
+            Ea = Funciones.ErrorRelativo(GXi, XiAnterior);
+        }
+        
+       
+        PuntoFijo renglon = new PuntoFijo();
+        renglon.setIteracionesMaximas(i);  
+        renglon.setXi(Xi);
+        renglon.setGXi(GXi);
+        renglon.setEa(Ea);  
+        
+     
+        respuestaPuntoFijo.add(renglon);
+        
+        // Verificar criterio de convergencia
+        if (i > 1 && Ea <= puntofijo.getEa()) {  //
+            break;
+        }
+        
+        // Preparar para la siguiente iteración
+        XiAnterior = Xi;
+        Xi = GXi;  // Para punto fijo: xi+1 = g(xi)
+    }
+    
+    return respuestaPuntoFijo;
+}
+
+
 }
