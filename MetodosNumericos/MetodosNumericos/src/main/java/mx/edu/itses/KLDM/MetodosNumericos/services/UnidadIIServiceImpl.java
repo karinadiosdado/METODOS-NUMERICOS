@@ -3,6 +3,7 @@ package mx.edu.itses.KLDM.MetodosNumericos.services;
 import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.Biseccion;
+import mx.edu.itses.KLDM.MetodosNumericos.domain.NewtonRaphson;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.PuntoFijo;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.ReglaFalsa;
 import org.springframework.stereotype.Service;
@@ -160,6 +161,67 @@ public ArrayList<ReglaFalsa> AlgoritmoReglaFalsa(ReglaFalsa reglafalsa) {
     
     return respuestaPuntoFijo;
 }
-
+public ArrayList<NewtonRaphson> AlgoritmoNewtonRaphson(NewtonRaphson newtonRaphson) {
+    ArrayList<NewtonRaphson> respuestaNewtonRaphson = new ArrayList<>();
+    double Xi, Xii = 0, Xia = 0, FXi, FXii, Ea = 100;
+    
+    Xi = newtonRaphson.getXi();
+    
+    // Verificar que la derivada no sea nula en el punto inicial
+    FXii = Funciones.Ecuacion(newtonRaphson.getFXDerivada(), Xi);
+    if (Math.abs(FXii) < 1e-10) {
+        // Si la derivada es muy pequeña, retornar lista vacía o con error
+        NewtonRaphson error = new NewtonRaphson();
+        error.setIteracionesMaximas(0);
+        error.setXi(Xi);
+        error.setEa(-1); // Indicador de error
+        respuestaNewtonRaphson.add(error);
+        return respuestaNewtonRaphson;
+    }
+    
+    for (int i = 1; i <= newtonRaphson.getIteracionesMaximas(); i++) {
+        // Evaluar f(Xi)
+        FXi = Funciones.Ecuacion(newtonRaphson.getFX(), Xi);
+        
+        // Evaluar f'(Xi)
+        FXii = Funciones.Ecuacion(newtonRaphson.getFXDerivada(), Xi);
+        
+        // Verificar que la derivada no sea cero
+        if (Math.abs(FXii) < 1e-10) {
+            break; // Salir si la derivada es muy pequeña
+        }
+        
+        // Fórmula de Newton-Raphson: Xii = Xi - f(Xi)/f'(Xi)
+        Xii = Xi - (FXi / FXii);
+        
+        // Calcular error relativo (solo después de la primera iteración)
+        if (i != 1) {
+            Ea = Funciones.ErrorRelativo(Xii, Xia);
+        }
+        
+        // Crear objeto para almacenar resultados de esta iteración
+        NewtonRaphson renglon = new NewtonRaphson();
+        renglon.getIteracionesMaximas();
+        renglon.setXi(Xi);
+        renglon.setFXi(FXi);
+        renglon.setFXii(FXii);
+        renglon.setXii(Xii);
+        renglon.setEa(Ea);
+        
+        // Agregar a la lista de resultados
+        respuestaNewtonRaphson.add(renglon);
+        
+        // Verificar criterio de convergencia
+        if (i > 1 && Ea <= newtonRaphson.getEa()) {
+            break;
+        }
+        
+        // Actualizar valores para próxima iteración
+        Xia = Xi;  // Guardar Xi anterior para cálculo de error
+        Xi = Xii;  // Xi+1 se convierte en el nuevo Xi
+    }
+    
+    return respuestaNewtonRaphson;
+}
 
 }
