@@ -305,12 +305,12 @@ public ArrayList<SecanteModificado> AlgoritmoSecanteModificado(SecanteModificado
         );
 
         if (Double.isNaN(FXi) || Double.isNaN(FXiSigma)) {
-            System.out.println("❌ Se detectó NaN en la evaluación de la función. Revisa la expresión ingresada.");
+            System.out.println(" Se detectó NaN en la evaluación de la función. Revisa la expresión ingresada.");
             break;
         }
 
         if (Math.abs(denominador) < 1e-8) {
-            System.out.println("⚠️ Denominador muy pequeño, deteniendo para evitar división por cero.");
+            System.out.println(" Denominador muy pequeño, deteniendo para evitar división por cero.");
             break;
         }
 
