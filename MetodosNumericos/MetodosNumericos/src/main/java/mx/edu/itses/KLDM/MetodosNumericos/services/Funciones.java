@@ -8,6 +8,7 @@ public class Funciones {
     public static double Ecuacion(String f1, double x) {
 
         double f;
+        f1 = f1.replace("–", "-").replace("−", "-"); 
         Function funcion = new Function(f1);
         Expression evaluacion = new Expression("f(" + x + ")", funcion);
         f = evaluacion.calculate();
