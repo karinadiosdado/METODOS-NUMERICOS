@@ -21,27 +21,26 @@
   </head>
   <body>
 
-    <nav class="navbar navbar-light bg-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">
-          <img th:src="@{/folder/logo.itses.png}"
-               width="125" height="38"
-               class="d-inline-block align-top">
-         NewtonRaphson
-        </a> 
-      </div>
-    </nav>
+        <nav  th:replace="/layout/template :: menu">
 
-    <div class="container">
-      <div class="row">
-        <img class="img-fluid w-100" th:src="@{/folder/metodosnumericos.png}"/>
-      </div>
-    </div>
+        </nav>
+
+        <div th:replace="/layout/template :: bannerunit2">
+        </div>
 
     <form  method="post" th:object="${newtonraphson}" th:action="@{/unit2/solveNewtonRaphson}">
       <div class="container">
         <h1>NewtonRaphson</h1>
+ <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Inicion</a></li>
 
+                    <li class="breadcrumb-item"><a href="/unit2">Solucion de Ecuaciones</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Formulario Newton Raphson</li>
+                </ol>
+            </nav>
+        </div>
         <div class="mb-3">
            <label class="form-label">Función f(x):</label>
                 <input type="text" class="form-control" th:field="*{FX}" 

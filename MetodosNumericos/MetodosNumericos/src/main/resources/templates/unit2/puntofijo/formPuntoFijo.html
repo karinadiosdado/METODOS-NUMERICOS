@@ -20,23 +20,22 @@
     ></script>
   </head>
   <body>
+     <nav  th:replace="/layout/template :: menu">
 
-    <nav class="navbar navbar-light bg-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">
-          <img th:src="@{/folder/logo.itses.png}"
-               width="125" height="38"
-               class="d-inline-block align-top">
-          Regla Falsa
-        </a> 
-      </div>
-    </nav>
+        </nav>
 
+        <div th:replace="/layout/template :: bannerunit2">
+        </div>
     <div class="container">
-      <div class="row">
-        <img class="img-fluid w-100" th:src="@{/folder/metodosnumericos.png}"/>
-      </div>
-    </div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Inicion</a></li>
+
+                    <li class="breadcrumb-item"><a href="/unit2">Solucion de Ecuaciones</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Formulario Punto Fijo</li>
+                </ol>
+            </nav>
+        </div>
 
     <form  method="post" th:object="${puntofijo}" th:action="@{/unit2/solvePuntoFijo}">
       <div class="container">

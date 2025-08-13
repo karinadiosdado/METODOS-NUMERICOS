@@ -21,23 +21,28 @@
     </head>
     <body>
 
-        <nav class="navbar navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">
-                    <img th:src="@{/folder/logo.itses.png}"
-                         width="125" height="38"
-                         class="d-inline-block align-top">
-                    METODOS NUMERICOS
-                </a> 
-            </div>
+           <nav  th:replace="/layout/template :: menu">
+
         </nav>
+
+        <div th:replace="/layout/template :: bannerunit2">
+        </div>
 
         <div class="container"  th:object="${puntofijo}" th:action="@{/unit2/Tabla}">
             <div class="row">
-                <img class="img-fluid w-100" th:src="@{/folder/metodosnumericos.png}"/>
             </div>
         </div>
+ <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Inicion</a></li>
 
+                    <li class="breadcrumb-item"><a href="/unit2">Solucion de Ecuaciones</a></li>
+                    <li class="breadcrumb-item "><a href="/unit2/formPuntoFijo"> Formulario Punto Fijo</li></a>
+                       <li class="breadcrumb-item active" aria-current="page">Tabla de Respuestas de  Punto Fijo</li>
+                </ol>
+            </nav>
+        </div>
         <table class="table">
             <thead>
                 <tr>

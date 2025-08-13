@@ -1,20 +1,25 @@
 package mx.edu.itses.KLDM.MetodosNumericos.web;
 
 import java.util.ArrayList;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.Biseccion;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.NewtonRaphson;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.PuntoFijo;
+import mx.edu.itses.KLDM.MetodosNumericos.domain.ReglaCramer;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.ReglaFalsa;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.Secante;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.SecanteModificado;
 import mx.edu.itses.KLDM.MetodosNumericos.services.Funciones;
+import mx.edu.itses.KLDM.MetodosNumericos.services.UnidadIIIService;
 import mx.edu.itses.KLDM.MetodosNumericos.services.UnidadIIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @Slf4j
@@ -22,6 +27,7 @@ public class Unit2Controller {
 
     @Autowired
     private UnidadIIService serService;
+
 
  
  @GetMapping("/unit2")
@@ -132,4 +138,6 @@ public String solveSecanteModificado(SecanteModificado secantemodificado, Model 
     model.addAttribute("solveSecanteModificado", solveSecanteModificado);
     return "unit2/secantemodificado/solveSecanteModificado";
 }
+
+
 }

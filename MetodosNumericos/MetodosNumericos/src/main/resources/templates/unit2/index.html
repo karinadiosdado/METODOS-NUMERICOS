@@ -21,46 +21,22 @@
     </head>
     <body>
 
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">
-                    <img th:src="@{/folder/logo.itses.png}"
-                         whidth="125"height="38"
-                         class="d-inline-block align-top">
-                    METODOS NUMERICOS
-                </a> 
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/"> Inicio </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/unit2"> Solucion Ecuaciones </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="/unit3"> Sistemas Lineales </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="/unit3"> Ajuste De Curvas </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="/unit3"> Diferencia  e Integracion </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="/unit3"> Ecuaciones Diferenciales </a>
-                        </li>
-                    </ul>
-                </div>
+        <nav  th:replace="/layout/template :: menu">
 
-            </div>
         </nav>
 
-        <div class="container">
-            <div class="row">
-                <img class="img-fluis w-100" th:src="@{/folder/metodosnumericos.png}"/>
-            </div>
+        <div th:replace="/layout/template :: bannerunit2">
         </div>
-
+        
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Solucion de ecuaciones</li>
+                </ol>
+            </nav>
+        </div>
+        
         <div class="container">
             <h1>Solucion de Ecuaciones algebraicas </h1>
             <h2>Metodos Numericos</h2>
@@ -78,14 +54,20 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/unit2/formNewtonRaphson">NewtonRaphson</a>
                 </li>
-                 <li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" href="/unit2/formSecante">Secante</a>
                 </li>
-                  <li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" href="/unit2/formSecanteModificado">Secante Modificado</a>
                 </li>
-                
-                
+                  <li class="nav-item">
+                    <a class="nav-link" href="/unit2/formcramer">Regla Crammer</a>
+                </li>
+  <li class="nav-item">
+                    <a class="nav-link" href="/unit3/formgauss">Elimiacion Gauss</a>
+                </li>
+
+
             </ul>
         </div>
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-introduccion
+
 <html xmlns:th"http://www.thymleaf.org">
       <head>
         <title>METODOS NUMERICOS</title>
@@ -21,48 +21,41 @@ introduccion
     </head>
     <body>
 
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">
-                    <img th:src="@{/folder/logo.itses.png}"
-                         whidth="125"height="38"
-                         class="d-inline-block align-top">
-                    METODOS NUMERICOS
-                </a> 
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/"> Inicio </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/unit2"> Solucion Ecuaciones </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="/unit3"> Sistemas Lineales </a>
-                        </li>
-                         <li class="nav-item">
-                            <a class="nav-link disabled" href="/unit3"> Ajuste De Curvas </a>
-                        </li>
-                         <li class="nav-item">
-                            <a class="nav-link disabled" href="/unit3"> Diferencia  e Integracion </a>
-                        </li>
-                         <li class="nav-item">
-                            <a class="nav-link disabled" href="/unit3"> Ecuaciones Diferenciales </a>
-                        </li>
-                    </ul>
+        <nav  th:replace="/layout/template :: menu">
+               
+        </nav>
+        
+
+         <div class="container" th:fragment="bannerunit2">
+                <div class="row">
+                    <img class="img-fluis w-100" th:src="@{/folder/metodosnumericos.png}"/>
                 </div>
             </div>
-        </nav>
 
         <div class="container">
-            <div class="row">
-                <img class="img-fluis w-100" th:src="@{/folder/metodosnumericos.png}"/>
-            </div>
-        </div>
+       
+             <h1>Solucion de Ecuaciones algebraicas </h1>
+            <h2>Esa pagina esta disenada para resolver ecuaciones de todo Tipo </h2>
+            <p>Proyecto de la materia de metodos numericos para el desarroloo  de distintos algoritmos aplicados ala ingieneria uti;izando </p>
+            <ul>
+                <li>Java JDK 21</li>
+                <li>SpringBoot 3.5.0</li>
+                <li>Lombook 1.18</li>
+                <li>Thymeleat</li>
+                <li>MathParser 6.1.0</li>
+            </ul>
+            <p>-----------------------------------------------------------------------------------------------------------------------------------------------------</p>
+            <h2>Solucones implementadas </h2>
+            <p>Eol ancalze de este proyecto incluye </p>
+            
+            <ul>
+                <li>Algoritmos de solucion de ecuaciones para estimacion de raices</li>
+                <li>Algoritmos de solucion de ssitemas lineales</li>
+                <li>Algoritmos de solucion de ajuste de datos</li>
+                <li>algoritmo de diferenciacion e integracion </li>
+            </ul>
 
-        <div class="container">
-            <h1>Solucion de Ecuaciones algebraicas </h1>
-            <h2>Pagina Principal</h2>
+    
     
         </div>
 

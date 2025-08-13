@@ -20,63 +20,64 @@
         ></script>
     </head>
     <body>
+     <nav  th:replace="/layout/template :: menu">
 
-        <nav class="navbar navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">
-                    <img th:src="@{/folder/logo.itses.png}"
-                         width="125" height="38"
-                         class="d-inline-block align-top">
-                    SECANTE
-                </a> 
-            </div>
         </nav>
 
+        <div th:replace="/layout/template :: bannerunit2">
+        </div>
         <div class="container">
             <div class="row">
-                <img class="img-fluid w-100" th:src="@{/folder/metodosnumericos.png}"/>
             </div>
         </div>
+<div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Inicion</a></li>
 
+                    <li class="breadcrumb-item"><a href="/unit2">Solucion de Ecuaciones</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Formulario Secante Modificado</li>
+                </ol>
+            </nav>
+        </div>
         <form  method="post" th:object="${secantemodificado}" th:action="@{/unit2/solveSecanteModificado}">
             <div class="container">
                 <h1>Secante Modificado </h1>
-                <div class="col-md-6 col-lg-4">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="FX" placeholder="FX" th:field="*{FX}">
+                <div class="mb-3">
                         <label for="FX">Funcion</label>
-                    </div>
+                        <input type="text" class="form-control" id="FX" placeholder="FX" th:field="*{FX}">
+                    
+                  
                 </div>
 
-                <div class="col-md-6 col-lg-4">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="IteracionesMaximas" placeholder="Iteraciones Máximas" th:field="*{IteracionesMaximas}">
-                        <label for="IteracionesMaximas">Iteraciones Máximas</label>
-                    </div>
-                </div>
+    
+            
 
-                <div class="col-md-6 col-lg-4">
-                    <div class="form-floating">
+            <div class="mb-3">
+                   <label for="Xi">Xi</label>
                         <input type="text" step="any" class="form-control" id="Xi" placeholder="Xi" th:field="*{Xi}">
-                        <label for="Xi">Xi</label>
-                    </div>
+                     
+                 
                 </div>
 
-                <div class="col-md-6 col-lg-4">
-                    <div class="form-floating">
+          <div class="mb-3">
+                   <label for="Sigma">Sigma</label>
                         <input type="text" step="any" class="form-control" id="Sigma" placeholder="Sigma" th:field="*{Sigma}">
-                        <label for="Sigma">Sigma</label>
+                   
                     </div>
-                </div>
-
-                <div class="col-md-6 col-lg-4">
-                    <div class="form-floating">
+           
+   <div class="mb-3">
+        <label for="Ea">Error estimado</label>
                         <input type="text" step="any" class="form-control" id="Ea" placeholder="Ea" th:field="*{Ea}">
-                        <label for="Ea">Error estimado</label>
-                    </div>
+                       
+                 
                 </div>
-            </div>
-
+           
+        <div class="mb-3">  
+                <label for="IteracionesMaximas">Iteraciones Máximas</label>
+                        <input type="text" class="form-control" id="IteracionesMaximas" placeholder="Iteraciones Máximas" th:field="*{IteracionesMaximas}">
+                      
+                    </div>
 
             <div class="d-flex gap-3">
                 <button type="submit" class="btn btn-primary">Calcular</button>
