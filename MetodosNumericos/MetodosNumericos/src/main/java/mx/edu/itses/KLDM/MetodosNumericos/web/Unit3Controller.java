@@ -3,6 +3,7 @@ package mx.edu.itses.KLDM.MetodosNumericos.web;
 import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.Gauss;
+import mx.edu.itses.KLDM.MetodosNumericos.domain.GaussJordan;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.ReglaCramer;
 import mx.edu.itses.KLDM.MetodosNumericos.services.UnidadIIIService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,5 +61,24 @@ public class Unit3Controller {
         //log.info("Pasos: " + solveGauss.getPasos());
         model.addAttribute("solveGauss", solveGauss);
         return "unit3/gauss/solvegauss";
+    }
+    
+    // === GAUSS-JORDAN ===
+    @GetMapping("/unit3/formgaussjordan")
+    public String formGaussJordan(Model model) {
+        GaussJordan modelGaussJordan = new GaussJordan();
+        model.addAttribute("modelGaussJordan", modelGaussJordan);
+        return "unit3/gaussjordan/formgaussjordan";
+    }
+    
+    @PostMapping("/unit3/solvegaussjordan")
+    public String solveGaussJordan(GaussJordan modelGaussJordan, Errors errores, Model model) {
+        //log.info("OBJECTOS:" + modelGaussJordan.getMatrizA());
+        ArrayList<Double> A = modelGaussJordan.getMatrizA();
+        var solveGaussJordan = unidadIIIsrv.AlgoritmoGaussJordan(modelGaussJordan);
+        //log.info("Solución: " + solveGaussJordan.getVectorX());
+        //log.info("Pasos: " + solveGaussJordan.getPasos());
+        model.addAttribute("solveGaussJordan", solveGaussJordan);
+        return "unit3/gaussjordan/solvegaussjordan";
     }
 }

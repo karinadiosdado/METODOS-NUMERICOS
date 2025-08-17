@@ -3,6 +3,7 @@ package mx.edu.itses.KLDM.MetodosNumericos.services;
 import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.Gauss;
+import mx.edu.itses.KLDM.MetodosNumericos.domain.GaussJordan;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.ReglaCramer;
 import org.springframework.stereotype.Service;
 
@@ -243,6 +244,122 @@ public class UnidadIIIServiceImpl implements UnidadIIIService {
     }
     
     private String formatearSistemaGauss(double[][] matriz, double[] resultados, int n) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (j > 0 && matriz[i][j] >= 0) sb.append(" + ");
+                else if (j > 0) sb.append(" ");
+                
+                sb.append(String.format("%.4f", matriz[i][j]));
+                sb.append("x").append(j + 1);
+            }
+            sb.append(" = ").append(String.format("%.4f", resultados[i])).append("\n");
+        }
+        return sb.toString();
+    }
+    @Override
+    public GaussJordan AlgoritmoGaussJordan(GaussJordan modelGaussJordan) {
+        ArrayList<Double> vectorX = new ArrayList<>();
+        
+        // Convertir ArrayList a matriz bidimensional
+        ArrayList<Double> A = modelGaussJordan.getMatrizA();
+        ArrayList<Double> b = modelGaussJordan.getVectorB();
+        int n = modelGaussJordan.getMN();
+        
+        double[][] matriz = new double[n][n];
+        int index = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                matriz[i][j] = A.get(index);
+                index++;
+            }
+        }
+        
+        double[] resultados = new double[n];
+        for (int i = 0; i < n; i++) {
+            resultados[i] = b.get(i);
+        }
+        
+        
+        try {
+            // Fase de eliminación hacia adelante (igual que Gauss)
+            for (int i = 0; i < n; i++) {
+                // Buscar el pivote máximo
+                int filaPivote = buscarPivoteMaximoGJ(matriz, i, n);
+                
+                // Intercambiar filas si es necesario
+                if (filaPivote != i) {
+                    intercambiarFilasGJ(matriz, resultados, i, filaPivote);
+                }
+                
+                // Verificar si el pivote es cero
+                if (Math.abs(matriz[i][i]) < 1e-10) {
+                    throw new ArithmeticException("El sistema no tiene solución única");
+                }
+                
+                // Normalizar la fila pivote (hacer el pivote = 1)
+                double pivote = matriz[i][i];
+                
+                for (int j = 0; j < n; j++) {
+                    matriz[i][j] /= pivote;
+                }
+                resultados[i] /= pivote;
+                
+                
+                // GAUSS-JORDAN: Eliminación hacia adelante Y hacia atrás
+                for (int j = 0; j < n; j++) {
+                    if (j != i && Math.abs(matriz[j][i]) > 1e-10) {
+                        double factor = matriz[j][i];
+                        
+                        
+                        for (int k = 0; k < n; k++) {
+                            matriz[j][k] -= factor * matriz[i][k];
+                        }
+                        resultados[j] -= factor * resultados[i];
+                        
+                    }
+                }
+            }
+            
+            // En Gauss-Jordan, la solución está directamente en el vector resultados
+            for (int i = 0; i < n; i++) {
+                vectorX.add(resultados[i]);
+            }
+            
+            log.info("Solución Gauss-Jordan: " + vectorX);
+            
+        } catch (Exception e) {
+            log.error("Error en Gauss-Jordan: " + e.getMessage());
+            throw new RuntimeException("Error en eliminación Gauss-Jordan: " + e.getMessage());
+        }
+        
+        // Establecer resultados en el modelo
+        modelGaussJordan.setVectorX(vectorX);
+        return modelGaussJordan;
+    }
+    
+    // Métodos auxiliares para eliminación Gauss-Jordan
+    private int buscarPivoteMaximoGJ(double[][] matriz, int columna, int n) {
+        int maxFila = columna;
+        for (int i = columna + 1; i < n; i++) {
+            if (Math.abs(matriz[i][columna]) > Math.abs(matriz[maxFila][columna])) {
+                maxFila = i;
+            }
+        }
+        return maxFila;
+    }
+    
+    private void intercambiarFilasGJ(double[][] matriz, double[] resultados, int fila1, int fila2) {
+        double[] tempFila = matriz[fila1];
+        matriz[fila1] = matriz[fila2];
+        matriz[fila2] = tempFila;
+        
+        double tempResultado = resultados[fila1];
+        resultados[fila1] = resultados[fila2];
+        resultados[fila2] = tempResultado;
+    }
+    
+    private String formatearSistemaGaussJordan(double[][] matriz, double[] resultados, int n) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
