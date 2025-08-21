@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.Gauss;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.GaussJordan;
+import mx.edu.itses.KLDM.MetodosNumericos.domain.GaussSeidel;
+import mx.edu.itses.KLDM.MetodosNumericos.domain.Jacobi;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.ReglaCramer;
 import org.springframework.stereotype.Service;
 
@@ -371,6 +373,317 @@ public class UnidadIIIServiceImpl implements UnidadIIIService {
             }
             sb.append(" = ").append(String.format("%.4f", resultados[i])).append("\n");
         }
+        return sb.toString();
+    }
+
+    @Override
+    public Jacobi AlgoritmoJacobi(Jacobi modelJacobi) {
+        ArrayList<String> pasos = new ArrayList<>();
+        ArrayList<Double> vectorX = new ArrayList<>();
+        
+        // Convertir ArrayList a matriz bidimensional
+        ArrayList<Double> A = modelJacobi.getMatrizA();
+        ArrayList<Double> b = modelJacobi.getVectorB();
+        ArrayList<Double> x0 = modelJacobi.getVectorInicial();
+        int n = modelJacobi.getMN();
+        
+        double[][] matriz = new double[n][n];
+        int index = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                matriz[i][j] = A.get(index);
+                index++;
+            }
+        }
+        
+        double[] resultados = new double[n];
+        for (int i = 0; i < n; i++) {
+            resultados[i] = b.get(i);
+        }
+        
+        // Vector inicial
+        double[] xAnterior = new double[n];
+        double[] xNuevo = new double[n];
+        
+        if (x0.size() == n) {
+            for (int i = 0; i < n; i++) {
+                xAnterior[i] = x0.get(i);
+            }
+        } else {
+            // Si no se proporciona vector inicial, usar ceros
+            for (int i = 0; i < n; i++) {
+                xAnterior[i] = 0.0;
+            }
+        }
+        
+        pasos.add("=== MÉTODO DE JACOBI ===");
+        pasos.add("Sistema original:");
+        pasos.add(formatearSistemaJacobi(matriz, resultados, n));
+        pasos.add("Vector inicial x⁰: " + formatearVector(xAnterior));
+        pasos.add("Tolerancia: " + modelJacobi.getTolerancia());
+        pasos.add("Máximo de iteraciones: " + modelJacobi.getMaxIteraciones());
+        pasos.add("");
+        
+        try {
+            // Verificar dominancia diagonal
+            if (!verificarDominanciaDiagonal(matriz, n)) {
+                pasos.add("⚠️ ADVERTENCIA: La matriz no es diagonalmente dominante.");
+                pasos.add("El método puede no converger.");
+                pasos.add("");
+            }
+            
+            boolean convergio = false;
+            int iteracion = 0;
+            double error = 0;
+            
+            while (iteracion < modelJacobi.getMaxIteraciones() && !convergio) {
+                iteracion++;
+                
+                // Fórmula de Jacobi: xi^(k+1) = (bi - Σ(aij * xj^k)) / aii
+                for (int i = 0; i < n; i++) {
+                    double suma = 0;
+                    for (int j = 0; j < n; j++) {
+                        if (i != j) {
+                            suma += matriz[i][j] * xAnterior[j];
+                        }
+                    }
+                    xNuevo[i] = (resultados[i] - suma) / matriz[i][i];
+                }
+                
+                // Calcular error (norma infinita)
+                error = 0;
+                for (int i = 0; i < n; i++) {
+                    double errorLocal = Math.abs(xNuevo[i] - xAnterior[i]);
+                    if (errorLocal > error) {
+                        error = errorLocal;
+                    }
+                }
+                
+                // Mostrar iteración
+                pasos.add("Iteración " + iteracion + ":");
+                pasos.add("x^" + iteracion + " = " + formatearVector(xNuevo));
+                pasos.add("Error = " + String.format("%.8f", error));
+                
+                // Verificar convergencia
+                if (error < modelJacobi.getTolerancia()) {
+                    convergio = true;
+                    pasos.add("✅ CONVERGENCIA ALCANZADA");
+                }
+                
+                pasos.add("");
+                
+                // Copiar xNuevo a xAnterior para la siguiente iteración
+                System.arraycopy(xNuevo, 0, xAnterior, 0, n);
+            }
+            
+            if (!convergio) {
+                pasos.add("❌ NO CONVERGIÓ en " + modelJacobi.getMaxIteraciones() + " iteraciones");
+                pasos.add("Error final: " + String.format("%.8f", error));
+            }
+            
+            // Guardar resultados
+            for (int i = 0; i < n; i++) {
+                vectorX.add(xNuevo[i]);
+            }
+            
+            modelJacobi.setIteracionesRealizadas(iteracion);
+            modelJacobi.setConvergio(convergio);
+            
+            
+            log.info("Solución Jacobi: " + vectorX);
+            log.info("Convergió: " + convergio + ", Iteraciones: " + iteracion + ", Error: " + error);
+            
+        } catch (Exception e) {
+            log.error("Error en Jacobi: " + e.getMessage());
+            pasos.add("Error: " + e.getMessage());
+            throw new RuntimeException("Error en método de Jacobi: " + e.getMessage());
+        }
+        
+        // Establecer resultados en el modelo
+        modelJacobi.setVectorX(vectorX);
+        modelJacobi.setPasos(pasos);
+        return modelJacobi;
+    }
+    
+    // Métodos auxiliares para Jacobi
+    private boolean verificarDominanciaDiagonal(double[][] matriz, int n) {
+        for (int i = 0; i < n; i++) {
+            double diagonal = Math.abs(matriz[i][i]);
+            double suma = 0;
+            for (int j = 0; j < n; j++) {
+                if (i != j) {
+                    suma += Math.abs(matriz[i][j]);
+                }
+            }
+            if (diagonal <= suma) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private String formatearSistemaJacobi(double[][] matriz, double[] resultados, int n) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (j > 0 && matriz[i][j] >= 0) sb.append(" + ");
+                else if (j > 0) sb.append(" ");
+                
+                sb.append(String.format("%.4f", matriz[i][j]));
+                sb.append("x").append(j + 1);
+            }
+            sb.append(" = ").append(String.format("%.4f", resultados[i])).append("\n");
+        }
+        return sb.toString();
+    }
+    
+    private String formatearVector(double[] vector) {
+        StringBuilder sb = new StringBuilder("(");
+        for (int i = 0; i < vector.length; i++) {
+            if (i > 0) sb.append(", ");
+            sb.append(String.format("%.6f", vector[i]));
+        }
+        sb.append(")");
+        return sb.toString();
+    }
+    
+    
+    @Override
+    public GaussSeidel AlgoritmoGaussSeidel(GaussSeidel modelGaussSeidel) {
+        ArrayList<String> pasos = new ArrayList<>();
+        ArrayList<Double> vectorX = new ArrayList<>();
+        
+        ArrayList<Double> A = modelGaussSeidel.getMatrizA();
+        ArrayList<Double> b = modelGaussSeidel.getVectorB();
+        ArrayList<Double> x0 = modelGaussSeidel.getVectorInicial();
+        int n = modelGaussSeidel.getMN();
+        
+        // Convertir a matriz
+        double[][] matriz = new double[n][n];
+        int index = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                matriz[i][j] = A.get(index++);
+            }
+        }
+        
+        double[] resultados = new double[n];
+        for (int i = 0; i < n; i++) {
+            resultados[i] = b.get(i);
+        }
+        
+        // Vector inicial
+        double[] xAnterior = new double[n];
+        double[] xNuevo = new double[n];
+        
+        for (int i = 0; i < n; i++) {
+            xAnterior[i] = (i < x0.size()) ? x0.get(i) : 0.0;
+            xNuevo[i] = xAnterior[i];
+        }
+        
+        pasos.add("=== MÉTODO DE GAUSS-SEIDEL ===");
+        pasos.add("Sistema original:");
+        pasos.add(formatearSistemaGS(matriz, resultados, n));
+        pasos.add("Vector inicial x⁰: " + formatVectorGS(xAnterior));
+        pasos.add("Tolerancia: " + modelGaussSeidel.getTolerancia());
+        pasos.add("Máximo de iteraciones: " + modelGaussSeidel.getMaxIteraciones());
+        pasos.add("");
+        
+        try {
+            boolean convergio = false;
+            int iteracion = 0;
+            double error = 0;
+            
+            while (iteracion < modelGaussSeidel.getMaxIteraciones() && !convergio) {
+                iteracion++;
+                
+                // GAUSS-SEIDEL: Usa valores NUEVOS ya calculados en la misma iteración
+                for (int i = 0; i < n; i++) {
+                    double suma = 0;
+                    for (int j = 0; j < n; j++) {
+                        if (i != j) {
+                            suma += matriz[i][j] * xNuevo[j]; // ¡Usa valores NUEVOS!
+                        }
+                    }
+                    xNuevo[i] = (resultados[i] - suma) / matriz[i][i];
+                }
+                
+                // Calcular error (norma infinita)
+                error = 0;
+                for (int i = 0; i < n; i++) {
+                    double errorLocal = Math.abs(xNuevo[i] - xAnterior[i]);
+                    if (errorLocal > error) {
+                        error = errorLocal;
+                    }
+                }
+                
+                // Mostrar iteración
+                pasos.add("Iteración " + iteracion + ":");
+                pasos.add("x^" + iteracion + " = " + formatVectorGS(xNuevo));
+                pasos.add("Error = " + String.format("%.8f", error));
+                
+                // Verificar convergencia
+                if (error < modelGaussSeidel.getTolerancia()) {
+                    convergio = true;
+                    pasos.add("✅ CONVERGENCIA ALCANZADA");
+                }
+                
+                pasos.add("");
+                
+                // Copiar xNuevo a xAnterior para la siguiente iteración
+                System.arraycopy(xNuevo, 0, xAnterior, 0, n);
+            }
+            
+            if (!convergio) {
+                pasos.add("❌ NO CONVERGIÓ en " + modelGaussSeidel.getMaxIteraciones() + " iteraciones");
+                pasos.add("Error final: " + String.format("%.8f", error));
+            }
+            
+            // Guardar resultados
+            for (int i = 0; i < n; i++) {
+                vectorX.add(xNuevo[i]);
+            }
+            
+            modelGaussSeidel.setIteracionesRealizadas(iteracion);
+            modelGaussSeidel.setConvergio(convergio);
+            modelGaussSeidel.setVectorX(vectorX);
+            modelGaussSeidel.setPasos(pasos);
+            
+            log.info("Solución Gauss-Seidel: " + vectorX);
+            log.info("Convergió: " + convergio + ", Iteraciones: " + iteracion + ", Error: " + error);
+            
+        } catch (Exception e) {
+            log.error("Error en Gauss-Seidel: " + e.getMessage());
+            pasos.add("Error: " + e.getMessage());
+            throw new RuntimeException("Error en método de Gauss-Seidel: " + e.getMessage());
+        }
+        
+        return modelGaussSeidel;
+    }
+    
+    // Métodos auxiliares para Gauss-Seidel
+    private String formatearSistemaGS(double[][] matriz, double[] resultados, int n) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (j > 0 && matriz[i][j] >= 0) sb.append(" + ");
+                else if (j > 0) sb.append(" ");
+                
+                sb.append(String.format("%.4f", matriz[i][j]));
+                sb.append("x").append(j + 1);
+            }
+            sb.append(" = ").append(String.format("%.4f", resultados[i])).append("\n");
+        }
+        return sb.toString();
+    }
+    
+    private String formatVectorGS(double[] vector) {
+        StringBuilder sb = new StringBuilder("(");
+        for (int i = 0; i < vector.length; i++) {
+            if (i > 0) sb.append(", ");
+            sb.append(String.format("%.6f", vector[i]));
+        }
+        sb.append(")");
         return sb.toString();
     }
 }

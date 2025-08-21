@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.Gauss;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.GaussJordan;
+import mx.edu.itses.KLDM.MetodosNumericos.domain.GaussSeidel;
+import mx.edu.itses.KLDM.MetodosNumericos.domain.Jacobi;
 import mx.edu.itses.KLDM.MetodosNumericos.domain.ReglaCramer;
 import mx.edu.itses.KLDM.MetodosNumericos.services.UnidadIIIService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,5 +82,41 @@ public class Unit3Controller {
         //log.info("Pasos: " + solveGaussJordan.getPasos());
         model.addAttribute("solveGaussJordan", solveGaussJordan);
         return "unit3/gaussjordan/solvegaussjordan";
+    }
+      // === JACOBI ===
+    @GetMapping("/unit3/formjacobi")
+    public String formJacobi(Model model) {
+        Jacobi modelJacobi = new Jacobi();
+        model.addAttribute("modelJacobi", modelJacobi);
+        return "unit3/jacobi/formjacobi";
+    }
+    
+    @PostMapping("/unit3/solvejacobi")
+    public String solveJacobi(Jacobi modelJacobi, Errors errores, Model model) {
+        //log.info("OBJECTOS:" + modelJacobi.getMatrizA());
+        ArrayList<Double> A = modelJacobi.getMatrizA();
+        var solveJacobi = unidadIIIsrv.AlgoritmoJacobi(modelJacobi);
+        //log.info("Solución: " + solveJacobi.getVectorX());
+        //log.info("Convergió: " + solveJacobi.isConvergio());
+        model.addAttribute("solveJacobi", solveJacobi);
+        return "unit3/jacobi/solvejacobi";
+    }
+    // === GAUSS-SEIDEL ===
+    @GetMapping("/unit3/formseidel")
+    public String formGaussSeidel(Model model) {
+        GaussSeidel modelGaussSeidel = new GaussSeidel();
+        model.addAttribute("modelGaussSeidel", modelGaussSeidel);
+        return "unit3/seidel/formseidel";
+    }
+    
+    @PostMapping("/unit3/solveseidel")
+    public String solveGaussSeidel(GaussSeidel modelGaussSeidel, Errors errores, Model model) {
+        //log.info("OBJECTOS:" + modelGaussSeidel.getMatrizA());
+        ArrayList<Double> A = modelGaussSeidel.getMatrizA();
+        var solveGaussSeidel = unidadIIIsrv.AlgoritmoGaussSeidel(modelGaussSeidel);
+        //log.info("Solución: " + solveGaussSeidel.getVectorX());
+        //log.info("Convergió: " + solveGaussSeidel.isConvergio());
+        model.addAttribute("solveGaussSeidel", solveGaussSeidel);
+        return "unit3/seidel/solveseidel";
     }
 }
