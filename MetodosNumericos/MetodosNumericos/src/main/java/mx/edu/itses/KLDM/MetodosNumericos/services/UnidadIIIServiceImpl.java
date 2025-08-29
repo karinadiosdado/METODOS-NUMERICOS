@@ -263,7 +263,6 @@ public class UnidadIIIServiceImpl implements UnidadIIIService {
     public GaussJordan AlgoritmoGaussJordan(GaussJordan modelGaussJordan) {
         ArrayList<Double> vectorX = new ArrayList<>();
         
-        // Convertir ArrayList a matriz bidimensional
         ArrayList<Double> A = modelGaussJordan.getMatrizA();
         ArrayList<Double> b = modelGaussJordan.getVectorB();
         int n = modelGaussJordan.getMN();
@@ -427,7 +426,7 @@ public class UnidadIIIServiceImpl implements UnidadIIIService {
         try {
             // Verificar dominancia diagonal
             if (!verificarDominanciaDiagonal(matriz, n)) {
-                pasos.add("⚠️ ADVERTENCIA: La matriz no es diagonalmente dominante.");
+                pasos.add("️ ADVERTENCIA: La matriz no es diagonalmente dominante.");
                 pasos.add("El método puede no converger.");
                 pasos.add("");
             }
@@ -467,7 +466,7 @@ public class UnidadIIIServiceImpl implements UnidadIIIService {
                 // Verificar convergencia
                 if (error < modelJacobi.getTolerancia()) {
                     convergio = true;
-                    pasos.add("✅ CONVERGENCIA ALCANZADA");
+                    pasos.add(" CONVERGENCIA ALCANZADA");
                 }
                 
                 pasos.add("");
@@ -477,7 +476,7 @@ public class UnidadIIIServiceImpl implements UnidadIIIService {
             }
             
             if (!convergio) {
-                pasos.add("❌ NO CONVERGIÓ en " + modelJacobi.getMaxIteraciones() + " iteraciones");
+                pasos.add(" NO CONVERGIÓ en " + modelJacobi.getMaxIteraciones() + " iteraciones");
                 pasos.add("Error final: " + String.format("%.8f", error));
             }
             
@@ -501,7 +500,6 @@ public class UnidadIIIServiceImpl implements UnidadIIIService {
         
         // Establecer resultados en el modelo
         modelJacobi.setVectorX(vectorX);
-        modelJacobi.setPasos(pasos);
         return modelJacobi;
     }
     
@@ -635,7 +633,7 @@ public class UnidadIIIServiceImpl implements UnidadIIIService {
             }
             
             if (!convergio) {
-                pasos.add("❌ NO CONVERGIÓ en " + modelGaussSeidel.getMaxIteraciones() + " iteraciones");
+                pasos.add(" NO CONVERGIÓ en " + modelGaussSeidel.getMaxIteraciones() + " iteraciones");
                 pasos.add("Error final: " + String.format("%.8f", error));
             }
             
@@ -647,7 +645,6 @@ public class UnidadIIIServiceImpl implements UnidadIIIService {
             modelGaussSeidel.setIteracionesRealizadas(iteracion);
             modelGaussSeidel.setConvergio(convergio);
             modelGaussSeidel.setVectorX(vectorX);
-            modelGaussSeidel.setPasos(pasos);
             
             log.info("Solución Gauss-Seidel: " + vectorX);
             log.info("Convergió: " + convergio + ", Iteraciones: " + iteracion + ", Error: " + error);

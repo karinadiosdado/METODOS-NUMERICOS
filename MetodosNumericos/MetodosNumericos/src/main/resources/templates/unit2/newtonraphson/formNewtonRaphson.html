@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>METODOS NUMERICOS</title>
@@ -20,22 +19,17 @@
     ></script>
   </head>
   <body>
-
         <nav  th:replace="/layout/template :: menu">
-
         </nav>
-
         <div th:replace="/layout/template :: bannerunit2">
         </div>
-
     <form  method="post" th:object="${newtonraphson}" th:action="@{/unit2/solveNewtonRaphson}">
       <div class="container">
         <h1>NewtonRaphson</h1>
  <div class="container">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/">Inicion</a></li>
-
+                    <li class="breadcrumb-item"><a href="/">Inicio</a></li>
                     <li class="breadcrumb-item"><a href="/unit2">Solucion de Ecuaciones</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Formulario Newton Raphson</li>
                 </ol>
@@ -44,29 +38,29 @@
         <div class="mb-3">
            <label class="form-label">Función f(x):</label>
                 <input type="text" class="form-control" th:field="*{FX}" 
-   >
+                       placeholder="Ej: x^3-x-2" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Derivada f'(x):</label>
-                <input type="text" class="form-control" th:field="*{FXDerivada}" 
-                       placeholder="Ej: 5.5 - 8*x + 1.5*x^2" required>
+                <input type="text" class="form-control" th:field="*{DFXi}" 
+                       placeholder="Ej: 3*x^2-1" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Valor inicial (Xi):</label>
-                <input type="number" step="any" class="form-control" th:field="*{Xi}">
+                <input type="number" step="any" class="form-control" th:field="*{Xi}" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Error tolerado (%):</label>
-                <input type="number" step="any" class="form-control" th:field="*{Ea}" value="0.5" >
+                <input type="number" step="any" class="form-control" th:field="*{Ea}" value="0.5" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Iteraciones máximas:</label>
                 <input type="number" class="form-control" th:field="*{IteracionesMaximas}" value="100" required>
             </div>
             <button type="submit" class="btn btn-primary">Calcular</button>
-            <a href="/unit2" class="btn btn-secondary">Regresar</a> </div>
+            <a href="/unit2" class="btn btn-secondary">Regresar</a> 
+        </div>
       </div>
     </form>
-
   </body>
 </html>

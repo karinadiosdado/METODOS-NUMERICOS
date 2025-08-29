@@ -23,9 +23,9 @@ public class Unit3Controller {
     private UnidadIIIService unidadIIIsrv;
     // ReglaCramer
 
-    @GetMapping("/unit3")
+    @GetMapping("/Unid3")
     public String index(Model model) {
-        return "unit2/index";
+        return "Unid3/index";
     }
 
     @GetMapping("/unit2/formcramer")
@@ -46,14 +46,15 @@ public class Unit3Controller {
         model.addAttribute("solveCramer", solveCramer);
         return "unit2/reglacramer/solvecramer";
     }
+
     //////////////////////////////////////GAUSS/////////////////////////
-     @GetMapping("/unit3/formgauss")
+    @GetMapping("/unit3/formgauss")
     public String formGauss(Model model) {
         Gauss modelGauss = new Gauss();
         model.addAttribute("modelGauss", modelGauss);
         return "unit3/gauss/formgauss";
     }
-    
+
     @PostMapping("/unit3/solvegauss")
     public String solveGauss(Gauss modelGauss, Errors errores, Model model) {
         //log.info("OBJECTOS:" + modelGauss.getMatrizA());
@@ -64,7 +65,7 @@ public class Unit3Controller {
         model.addAttribute("solveGauss", solveGauss);
         return "unit3/gauss/solvegauss";
     }
-    
+
     // === GAUSS-JORDAN ===
     @GetMapping("/unit3/formgaussjordan")
     public String formGaussJordan(Model model) {
@@ -72,7 +73,7 @@ public class Unit3Controller {
         model.addAttribute("modelGaussJordan", modelGaussJordan);
         return "unit3/gaussjordan/formgaussjordan";
     }
-    
+
     @PostMapping("/unit3/solvegaussjordan")
     public String solveGaussJordan(GaussJordan modelGaussJordan, Errors errores, Model model) {
         //log.info("OBJECTOS:" + modelGaussJordan.getMatrizA());
@@ -83,14 +84,15 @@ public class Unit3Controller {
         model.addAttribute("solveGaussJordan", solveGaussJordan);
         return "unit3/gaussjordan/solvegaussjordan";
     }
-      // === JACOBI ===
+    // === JACOBI ===
+
     @GetMapping("/unit3/formjacobi")
     public String formJacobi(Model model) {
         Jacobi modelJacobi = new Jacobi();
         model.addAttribute("modelJacobi", modelJacobi);
         return "unit3/jacobi/formjacobi";
     }
-    
+
     @PostMapping("/unit3/solvejacobi")
     public String solveJacobi(Jacobi modelJacobi, Errors errores, Model model) {
         //log.info("OBJECTOS:" + modelJacobi.getMatrizA());
@@ -101,6 +103,7 @@ public class Unit3Controller {
         model.addAttribute("solveJacobi", solveJacobi);
         return "unit3/jacobi/solvejacobi";
     }
+
     // === GAUSS-SEIDEL ===
     @GetMapping("/unit3/formseidel")
     public String formGaussSeidel(Model model) {
@@ -108,7 +111,7 @@ public class Unit3Controller {
         model.addAttribute("modelGaussSeidel", modelGaussSeidel);
         return "unit3/seidel/formseidel";
     }
-    
+
     @PostMapping("/unit3/solveseidel")
     public String solveGaussSeidel(GaussSeidel modelGaussSeidel, Errors errores, Model model) {
         //log.info("OBJECTOS:" + modelGaussSeidel.getMatrizA());

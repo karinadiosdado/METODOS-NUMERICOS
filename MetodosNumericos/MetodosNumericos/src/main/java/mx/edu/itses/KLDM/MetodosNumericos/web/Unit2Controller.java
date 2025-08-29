@@ -28,13 +28,11 @@ public class Unit2Controller {
     @Autowired
     private UnidadIIService serService;
 
+    @GetMapping("/unit2")
+    public String index(Model model) {
+        return "unit2/index";
+    }
 
- 
- @GetMapping("/unit2")
- public String index (Model model){
-     return "unit2/index";
- }
- 
     @GetMapping("unit2/formbisection")
     public String formBisection(Model model) {
 
@@ -57,87 +55,88 @@ public class Unit2Controller {
     }
 
 // REGLA FALSA
-  @GetMapping("unit2/formReglaFalsa")
+    @GetMapping("unit2/formReglaFalsa")
     public String formReglaFalsa(Model model) {
 
-          ReglaFalsa reglafalsa = new ReglaFalsa();
+        ReglaFalsa reglafalsa = new ReglaFalsa();
 
         model.addAttribute("reglafalsa", reglafalsa);
         return "unit2/reglafalsa/formReglaFalsa";
     }
-@PostMapping("unit2/solveReglaFalsa")
-public String solveReglaFalsa(ReglaFalsa reglafalsa, Model model) {
-    var solveReglaFalsa = serService.AlgoritmoReglaFalsa(reglafalsa);
-    model.addAttribute("solveReglaFalsa", solveReglaFalsa);
-    return "unit2/reglafalsa/solveReglaFalsa";
-}
+
+    @PostMapping("unit2/solveReglaFalsa")
+    public String solveReglaFalsa(ReglaFalsa reglafalsa, Model model) {
+        var solveReglaFalsa = serService.AlgoritmoReglaFalsa(reglafalsa);
+        model.addAttribute("solveReglaFalsa", solveReglaFalsa);
+        return "unit2/reglafalsa/solveReglaFalsa";
+    }
 
 // Punto Fijo
-  @GetMapping("unit2/formPuntoFijo")
+    @GetMapping("unit2/formPuntoFijo")
     public String formPuntoFijo(Model model) {
 
-          PuntoFijo puntofijo = new PuntoFijo();
+        PuntoFijo puntofijo = new PuntoFijo();
 
         model.addAttribute("puntofijo", puntofijo);
         return "unit2/puntofijo/formPuntoFijo";
     }
-@PostMapping("unit2/solvePuntoFijo")
-public String solvePuntoFijo(PuntoFijo puntofijo, Model model) {
-    var solvePuntoFijo = serService.AlgoritmoPuntoFijo(puntofijo);
-    model.addAttribute("solvePuntoFijo", solvePuntoFijo);
-    return "unit2/puntofijo/solvePuntoFijo";
-}
+
+    @PostMapping("unit2/solvePuntoFijo")
+    public String solvePuntoFijo(PuntoFijo puntofijo, Model model) {
+        var solvePuntoFijo = serService.AlgoritmoPuntoFijo(puntofijo);
+        model.addAttribute("solvePuntoFijo", solvePuntoFijo);
+        return "unit2/puntofijo/solvePuntoFijo";
+    }
 
 // NewtonRapson
-
-@GetMapping("unit2/formNewtonRaphson")
+    @GetMapping("unit2/formNewtonRaphson")
     public String formNewtonRaphson(Model model) {
 
-          NewtonRaphson newtonraphson = new NewtonRaphson();
+        NewtonRaphson newtonraphson = new NewtonRaphson();
 
         model.addAttribute("newtonraphson", newtonraphson);
         return "unit2/newtonraphson/formNewtonRaphson";
     }
-@PostMapping("unit2/solveNewtonRaphson")
-public String solveNewtonRaphson(NewtonRaphson newtonraphson, Model model) {
-    var solveNewtonRaphson = serService.AlgoritmoNewtonRaphson(newtonraphson);
-    model.addAttribute("solveNewtonRaphson", solveNewtonRaphson);
-    return "unit2/newtonraphson/solveNewtonRaphson";
-}
+
+    @PostMapping("unit2/solveNewtonRaphson")
+    public String solveNewtonRaphson(NewtonRaphson newtonraphson, Model model) {
+        var solveNewtonRaphson = serService.AlgoritmoNewtonRaphson(newtonraphson);
+        model.addAttribute("solveNewtonRaphson", solveNewtonRaphson);
+        return "unit2/newtonraphson/solveNewtonRaphson";
+    }
 
 // secante
-
-@GetMapping("unit2/formSecante")
+    @GetMapping("unit2/formSecante")
     public String formSecante(Model model) {
 
-          Secante secante = new Secante();
+        Secante secante = new Secante();
 
         model.addAttribute("secante", secante);
         return "unit2/secante/formSecante";
     }
-@PostMapping("unit2/solveSecante")
-public String solveSecante(Secante secante, Model model) {
-    var solveSecante = serService.AlgoritmoSecante(secante);
-    model.addAttribute("solveSecante", solveSecante);
-    return "unit2/secante/solveSecante";
-}
+
+    @PostMapping("unit2/solveSecante")
+    public String solveSecante(Secante secante, Model model) {
+        var solveSecante = serService.AlgoritmoSecante(secante);
+        model.addAttribute("solveSecante", solveSecante);
+        return "unit2/secante/solveSecante";
+    }
 
 // secantemodificado
-
-@GetMapping("unit2/formSecanteModificado")
+    @GetMapping("unit2/formSecanteModificado")
     public String formSecanteModificado(Model model) {
 
-          SecanteModificado secantemodificado = new SecanteModificado();
+        SecanteModificado secantemodificado = new SecanteModificado();
 
         model.addAttribute("secantemodificado", secantemodificado);
         return "unit2/secantemodificado/formSecanteModificado";
     }
-@PostMapping("unit2/solveSecanteModificado")
-public String solveSecanteModificado(SecanteModificado secantemodificado, Model model) {
-    var solveSecanteModificado = serService.AlgoritmoSecanteModificado(secantemodificado);
-    model.addAttribute("solveSecanteModificado", solveSecanteModificado);
-    return "unit2/secantemodificado/solveSecanteModificado";
-}
 
+    @PostMapping("unit2/solveSecanteModificado")
+    public String solveSecanteModificado(SecanteModificado secantemodificado, Model model) {
+        var solveSecanteModificado = serService.AlgoritmoSecanteModificado(secantemodificado);
+        model.addAttribute("solveSecanteModificado", solveSecanteModificado);
+        return "unit2/secantemodificado/solveSecanteModificado";
+    }
 
 }

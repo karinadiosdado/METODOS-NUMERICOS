@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>METODOS NUMERICOS</title>
@@ -20,62 +19,45 @@
         ></script>
     </head>
     <body>
-
-      <nav  th:replace="/layout/template :: menu">
-
+        <nav th:replace="/layout/template :: menu">
         </nav>
-
         <div th:replace="/layout/template :: bannerunit2">
         </div>
-
-        <div class="container"  th:object="${puntofijo}" th:action="@{/unit2/Tabla}">
-            <div class="row">
-            </div>
-        </div>
- <div class="container">
+        
+        <div class="container">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/">Inicion</a></li>
-
-                    <li class="breadcrumb-item"><a href="/unit2">Solucion de Ecuaciones</a></li>
-                    <li class="breadcrumb-item "><a href="/unit2/formNewtonRaphson"> Formulario Newton Raphson</li></a>
-                       <li class="breadcrumb-item active" aria-current="page">Tabla de Respuestas de Newton Raphson</li>
+                    <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="/unit2">Solución de Ecuaciones</a></li>
+                    <li class="breadcrumb-item"><a href="/unit2/formNewtonRaphson">Formulario Newton Raphson</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Tabla de Respuestas de Newton Raphson</li>
                 </ol>
             </nav>
         </div>
-        <table class="table">
-            <thead>
-                <tr>
-         <th>Iteración</th>
-          <th>#</th>
+        
+        <div class="container">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Iteración</th>
                         <th>Xi</th>
                         <th>f(Xi)</th>
                         <th>f'(Xi)</th>
                         <th>Xi+1</th>
                         <th>Ea (%)</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                <tr  th:each="solve,iter:${solveNewtonRaphson}">
-                    <td th:text="${iter.index}"> # de Iteracion</td>
-                    <td th:text="${solve.Xi}">Valor  Xi</td>
-                    <td th:text="${solve.FXi}"> Valor FXi</td>
-                                        <td th:text="${solve.FXii}">Valor  FXii</td>
-                    <td th:text="${solve.Xii}"> Valor Xii</td>
-                  
-                    <td th:text="${solve.Ea}"> Error estimado actual</td>
-
-
-                    <td></td>
-
-                </tr>
-
-
-            </tbody>
-        </table>
-
-
-
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="solve,iter : ${solveNewtonRaphson}">
+                        <td th:text="${iter.index + 1}">Iteración</td>
+                        <td th:text="${solve.Xi}">Xi</td>
+                        <td th:text="${solve.FXi}">f(Xi)</td>
+                        <td th:text="${solve.DFXi}">f'(Xi)</td>
+                        <td th:text="${solve.Xi1}">Xi+1</td>
+                        <td th:text="${solve.Ea}">Ea</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </body>
 </html>

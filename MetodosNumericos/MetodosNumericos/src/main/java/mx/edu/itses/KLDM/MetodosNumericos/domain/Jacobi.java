@@ -11,7 +11,6 @@ public class Jacobi {
     private ArrayList<Double> vectorB;
     private ArrayList<Double> vectorX;
     private ArrayList<Double> vectorInicial;
-    private ArrayList<String> pasos;
     private double tolerancia;
     private int maxIteraciones;
     private int iteracionesRealizadas;

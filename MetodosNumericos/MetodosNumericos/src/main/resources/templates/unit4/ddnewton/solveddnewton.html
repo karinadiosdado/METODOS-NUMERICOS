@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Métodos Numéricos</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        
+  
+    </head>
+
+    <body>
+        <div class="container">
+            <nav th:replace="/layout/template :: menu"></nav>
+            <div th:replace="/layout/template :: bannerunit2"></div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="/unit4">Interpolación</a></li>
+                    <li class="breadcrumb-item active">Resultado Newton DD</li>
+                </ol>
+            </nav>
+
+            <div class="container">
+                <h1>Diferencias Divididas de Newton</h1>
+
+                <div class="row">
+                    <div class="col-6">
+                        <p><strong>Orden del Polinomio:</strong> <span th:text="${modelDDNewton.orden}"></span></p>
+                    </div>
+                    <div class="col-6">
+<p><strong>Número de Puntos:</strong> <span th:text="${modelDDNewton.puntosX.size()}"></span></p>
+                     </div>
+                </div>
+                
+                <!-- Resultado principal -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="resultado-box text-center">
+                            <h4>Resultado de la Interpolación</h4>
+                            <h3>P(<span th:text="${modelDDNewton.valorX}"></span>) = <span th:text="${#numbers.formatDecimal(modelDDNewton.resultado, 1, 8)}"></span></h3>
+                            <p>Valor interpolado usando el polinomio de Newton</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Polinomio resultante -->
+                <div class="row">
+                    <div class="col-12">
+                        <h5>Polinomio de Newton:</h5>
+                        <div class="polinomio-box" th:text="${modelDDNewton.polinomio}">
+                            Polinomio aquí
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Puntos dados -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h5>Puntos Utilizados:</h5>
+                        <div class="tabla-dd">
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Puntos X:</strong>
+                                    <div th:each="puntoX, stat : ${modelDDNewton.puntosX}">
+                                        x<sub th:text="${stat.index}"></sub> = <span th:text="${puntoX}"></span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Valores Y = f(X):</strong>
+                                    <div th:each="puntoY, stat : ${modelDDNewton.puntosY}">
+                                        f(x<sub th:text="${stat.index}"></sub>) = <span th:text="${puntoY}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coeficientes -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h5>Coeficientes del Polinomio:</h5>
+                        <div class="alert alert-info">
+                            <div th:each="coef, stat : ${modelDDNewton.coeficientes}">
+                                <strong>a<sub th:text="${stat.index}"></sub></strong> = <span th:text="${#numbers.formatDecimal(coef, 1, 8)}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+             
+                <!-- Botones de navegación -->
+                <div class="row mt-4">
+                    <div class="col-12 text-center">
+                        <a th:href="@{/unit4/formddnewton}" class="btn btn-primary me-2">Resolver Otra Interpolación</a>
+                        <a th:href="@{/}" class="btn btn-outline-secondary">Volver al Menú Principal</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

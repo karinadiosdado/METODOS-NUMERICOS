@@ -160,76 +160,56 @@ public class UnidadIIServiceImpl implements UnidadIIService {
         return respuestaPuntoFijo;
     }
 
-    public ArrayList<NewtonRaphson> AlgoritmoNewtonRaphson(NewtonRaphson newtonRaphson) {
-        ArrayList<NewtonRaphson> respuestaNewtonRaphson = new ArrayList<>();
-        double Xi, Xii = 0, Xia = 0, FXi, FXii, Ea = 100;
+    @Override
+    public ArrayList<NewtonRaphson> AlgoritmoNewtonRaphson(NewtonRaphson newtonraphson) {
+        ArrayList<NewtonRaphson> respuesta = new ArrayList<>();
 
-        Xi = newtonRaphson.getXi();
+        double Xi = newtonraphson.getXi(); // valor inicial
+        double Xi1 = 0;           // siguiente Xi
+        double Ea = 100;            // error inicial
+        double h = 0.0001; // paso pequeño para aproximar derivada
 
-        // Verificar que la derivada no sea nula en el punto inicial
-        FXii = Funciones.Ecuacion(newtonRaphson.getFXDerivada(), Xi);
-        if (Math.abs(FXii) < 1e-10) {
-            // Si la derivada es muy pequeña, retornar lista vacía o con error
-            NewtonRaphson error = new NewtonRaphson();
-            error.setIteracionesMaximas(0);
-            error.setXi(Xi);
-            error.setEa(-1); // Indicador de error
-            respuestaNewtonRaphson.add(error);
-            return respuestaNewtonRaphson;
-        }
+        int maxIteraciones = newtonraphson.getIteracionesMaximas();
 
-        for (int i = 1; i <= newtonRaphson.getIteracionesMaximas(); i++) {
-            // Evaluar f(Xi)
-            FXi = Funciones.Ecuacion(newtonRaphson.getFX(), Xi);
-
-            // Evaluar f'(Xi)
-            FXii = Funciones.Ecuacion(newtonRaphson.getFXDerivada(), Xi);
-
-            // Verificar que la derivada no sea cero
-            if (Math.abs(FXii) < 1e-10) {
-                break; // Salir si la derivada es muy pequeña
-            }
-
-            // Fórmula de Newton-Raphson: Xii = Xi - f(Xi)/f'(Xi)
-            Xii = Xi - (FXi / FXii);
-
-            // Calcular error relativo (solo después de la primera iteración)
-            if (i != 1) {
-                Ea = Funciones.ErrorRelativo(Xii, Xia);
-            }
-
-            // Crear objeto para almacenar resultados de esta iteración
-            NewtonRaphson renglon = new NewtonRaphson();
-            renglon.getIteracionesMaximas();
-            renglon.setXi(Xi);
-            renglon.setFXi(FXi);
-            renglon.setFXii(FXii);
-            renglon.setXii(Xii);
-            renglon.setEa(Ea);
-
-            // Agregar a la lista de resultados
-            respuestaNewtonRaphson.add(renglon);
-
-            // Verificar criterio de convergencia
-            if (i > 1 && Ea <= newtonRaphson.getEa()) {
+        for (int i = 1; i <= maxIteraciones; i++) {
+            double FXi = Funciones.Ecuacion(newtonraphson.getFX(), Xi);
+            double FdXi = (Funciones.Ecuacion(newtonraphson.getFX(), Xi + h) - FXi) / h;
+            if (FdXi == 0) {
+                System.out.println("Derivada cercana a cero, deteniendo iteración");
                 break;
             }
+            // Xi+1
+            Xi1 = Xi - (FXi / FdXi);
 
-            // Actualizar valores para próxima iteración
-            Xia = Xi;  // Guardar Xi anterior para cálculo de error
-            Xi = Xii;  // Xi+1 se convierte en el nuevo Xi
+            // Calcular el error relativo aproximado
+            Ea = Funciones.ErrorRelativo(Xi1, Xi);
+
+            // Guardar datos de la iteración
+            NewtonRaphson iteracion = new NewtonRaphson();
+            iteracion.setXi(Xi);
+            iteracion.setFXi(FXi);
+            iteracion.setDFXi(String.valueOf(FdXi));
+            iteracion.setXi1(Xi1);
+            iteracion.setEa(Ea);
+            iteracion.setIteracionesMaximas(i);
+
+            respuesta.add(iteracion);
+
+            // Verificar si el error ya está por debajo del deseado
+            // Preparar para siguiente iteración
+            Xi = Xi1;
         }
 
-        return respuestaNewtonRaphson;
-    }
+        return respuesta;
 
-   @Override
+    }
+    @Override
     public ArrayList<Secante> AlgoritmoSecante(Secante secante) {
         ArrayList<Secante> respuesta = new ArrayList<>();
 
         double Xi_1 = secante.getXi_1();
-        double Xi = secante.getXi();   
-        double Xi1;                     
+        double Xi = secante.getXi();
+        double Xi1;
         double F_Xi_1, F_Xi, Ea = 100;
 
         int maxIteraciones = secante.getIteracionesMaximas();
@@ -238,8 +218,6 @@ public class UnidadIIServiceImpl implements UnidadIIService {
             F_Xi_1 = Funciones.Ecuacion(secante.getFX(), Xi_1);
             F_Xi = Funciones.Ecuacion(secante.getFX(), Xi);
 
-
-            
             if ((F_Xi_1 - F_Xi) == 0) {
                 System.out.println("Denominador cercano a cero, deteniendo iteración.");
                 break;
@@ -263,7 +241,6 @@ public class UnidadIIServiceImpl implements UnidadIIService {
             iter.setIteracionesMaximas(i);
             iter.setFX(secante.getFX());
 
-
             // Guardar resultados de esta iteración
             respuesta.add(iter);
 
@@ -280,69 +257,68 @@ public class UnidadIIServiceImpl implements UnidadIIService {
         return respuesta;
     }
 
+    @Override
+    public ArrayList<SecanteModificado> AlgoritmoSecanteModificado(SecanteModificado secantemodificado) {
+        ArrayList<SecanteModificado> respuesta = new ArrayList<>();
 
-@Override
-public ArrayList<SecanteModificado> AlgoritmoSecanteModificado(SecanteModificado secantemodificado) {
-    ArrayList<SecanteModificado> respuesta = new ArrayList<>();
+        double Xi = secantemodificado.getXi();
+        double Xi1;
+        double Ea = 100;
+        int maxIteraciones = secantemodificado.getIteracionesMaximas();
+        double sigma = secantemodificado.getSigma();
 
-    double Xi = secantemodificado.getXi();
-    double Xi1;
-    double Ea = 100;
-    int maxIteraciones = secantemodificado.getIteracionesMaximas();
-    double sigma = secantemodificado.getSigma();
+        for (int i = 1; i <= maxIteraciones; i++) {
+            double deltaXi = sigma * Xi;
+            double FXi = Funciones.Ecuacion(secantemodificado.getFX(), Xi);
+            double FXiSigma = Funciones.Ecuacion(secantemodificado.getFX(), Xi + deltaXi);
 
-    for (int i = 1; i <= maxIteraciones; i++) {
-        double deltaXi = sigma * Xi;
-        double FXi = Funciones.Ecuacion(secantemodificado.getFX(), Xi);
-        double FXiSigma = Funciones.Ecuacion(secantemodificado.getFX(), Xi + deltaXi);
+            double denominador = FXiSigma - FXi;
 
-        double denominador = FXiSigma - FXi;
+            // 🔍 Imprimir depuración completa
+            System.out.printf(
+                    "Iteración %d:\n  Xi=%.6f\n  FXi=%.6f\n  FXi+deltaXi=%.6f\n  DeltaXi=%.6f\n  Denominador=%.6f\n",
+                    i, Xi, FXi, FXiSigma, deltaXi, denominador
+            );
 
-        // 🔍 Imprimir depuración completa
-        System.out.printf(
-            "Iteración %d:\n  Xi=%.6f\n  FXi=%.6f\n  FXi+deltaXi=%.6f\n  DeltaXi=%.6f\n  Denominador=%.6f\n",
-            i, Xi, FXi, FXiSigma, deltaXi, denominador
-        );
+            if (Double.isNaN(FXi) || Double.isNaN(FXiSigma)) {
+                System.out.println(" Se detectó NaN en la evaluación de la función. Revisa la expresión ingresada.");
+                break;
+            }
 
-        if (Double.isNaN(FXi) || Double.isNaN(FXiSigma)) {
-            System.out.println(" Se detectó NaN en la evaluación de la función. Revisa la expresión ingresada.");
-            break;
+            if (Math.abs(denominador) < 1e-8) {
+                System.out.println(" Denominador muy pequeño, deteniendo para evitar división por cero.");
+                break;
+            }
+
+            Xi1 = Xi - (deltaXi * FXi) / denominador;
+
+            if (i != 1) {
+                Ea = Funciones.ErrorRelativo(Xi1, Xi);
+            }
+
+            System.out.printf("  Xi+1=%.6f\n  Error=%.6f%%\n\n", Xi1, Ea);
+
+            // Guardar resultados
+            SecanteModificado iter = new SecanteModificado();
+            iter.setXi(Xi);
+            iter.setXi1(Xi1);
+            iter.setFXi(FXi);
+            iter.setFXiSigma(FXiSigma);
+            iter.setEa(Ea);
+            iter.setIteracionesMaximas(i);
+            iter.setFX(secantemodificado.getFX());
+            iter.setSigma(sigma);
+
+            respuesta.add(iter);
+
+            if (Ea <= secantemodificado.getEa()) {
+                break;
+            }
+
+            Xi = Xi1;
         }
 
-        if (Math.abs(denominador) < 1e-8) {
-            System.out.println(" Denominador muy pequeño, deteniendo para evitar división por cero.");
-            break;
-        }
-
-        Xi1 = Xi - (deltaXi * FXi) / denominador;
-
-        if (i != 1) {
-            Ea = Funciones.ErrorRelativo(Xi1, Xi);
-        }
-
-        System.out.printf("  Xi+1=%.6f\n  Error=%.6f%%\n\n", Xi1, Ea);
-
-        // Guardar resultados
-        SecanteModificado iter = new SecanteModificado();
-        iter.setXi(Xi);
-        iter.setXi1(Xi1);
-        iter.setFXi(FXi);
-        iter.setFXiSigma(FXiSigma);
-        iter.setEa(Ea);
-        iter.setIteracionesMaximas(i);
-        iter.setFX(secantemodificado.getFX());
-        iter.setSigma(sigma);
-
-        respuesta.add(iter);
-
-        if (Ea <= secantemodificado.getEa()) {
-            break;
-        }
-
-        Xi = Xi1;
+        return respuesta;
     }
-
-    return respuesta;
-}
 
 }
