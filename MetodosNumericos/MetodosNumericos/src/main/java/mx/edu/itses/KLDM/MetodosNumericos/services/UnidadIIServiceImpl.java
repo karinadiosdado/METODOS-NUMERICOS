@@ -67,58 +67,72 @@ public class UnidadIIServiceImpl implements UnidadIIService {
 
     @Override
 
-    public ArrayList<ReglaFalsa> AlgoritmoReglaFalsa(ReglaFalsa reglafalsa) {
-        ArrayList<ReglaFalsa> respuestaReglaFalsa = new ArrayList<>();
-        double XL, XU, XRa = 0, XRn, FXL, FXU, FXR, Ea = 100;
-        XL = reglafalsa.getXL();
-        XU = reglafalsa.getXU();
+  public ArrayList<ReglaFalsa> AlgoritmoReglaFalsa(ReglaFalsa reglafalsa) {
+    ArrayList<ReglaFalsa> respuestaReglaFalsa = new ArrayList<>();
+    double XL, XU, XRa = 0, XRn, FXL, FXU, FXR, Ea = 100;
+    XL = reglafalsa.getXL();
+    XU = reglafalsa.getXU();
 
-        FXL = Funciones.Ecuacion(reglafalsa.getFX(), XL);
-        FXU = Funciones.Ecuacion(reglafalsa.getFX(), XU);
+    FXL = Funciones.Ecuacion(reglafalsa.getFX(), XL);
+    FXU = Funciones.Ecuacion(reglafalsa.getFX(), XU);
 
-        if (FXL * FXU < 0) {
-            for (int i = 1; i <= reglafalsa.getIteracionesMaximas(); i++) {
-                // Fórmula de Regla Falsa
-                XRn = XU - (FXU * (XL - XU)) / (FXL - FXU);
-                FXR = Funciones.Ecuacion(reglafalsa.getFX(), XRn);
+    if (FXL * FXU < 0) {
+        for (int i = 1; i <= reglafalsa.getIteracionesMaximas(); i++) {
+            // Fórmula de Regla Falsa
+            XRn = XU - (FXU * (XL - XU)) / (FXL - FXU);
+            FXR = Funciones.Ecuacion(reglafalsa.getFX(), XRn);
 
-                if (i != 1) {
-                    Ea = Funciones.ErrorRelativo(XRn, XRa);
-                }
+            if (i != 1) {
+                Ea = Funciones.ErrorRelativo(XRn, XRa);
+            }
 
-                ReglaFalsa renglon = new ReglaFalsa();
-                renglon.setIteracionesMaximas(i);
-                renglon.setXL(XL);
-                renglon.setXU(XU);
-                renglon.setXR(XRn);
-                renglon.setFXL(FXL);
-                renglon.setFXU(FXU);
-                renglon.setFXR(FXR);
-                renglon.setEa(Ea);
+            ReglaFalsa renglon = new ReglaFalsa();
+            renglon.setIteracionesMaximas(i);
+            renglon.setXL(XL);
+            renglon.setXU(XU);
+            renglon.setXR(XRn);
+            renglon.setFXL(FXL);
+            renglon.setFXU(FXU);
+            renglon.setFXR(FXR);
+            renglon.setEa(Ea);
 
-                // AGREGAR ESTA LÍNEA PARA CALCULAR EL PRODUCTO
-                renglon.setProductoFXL_FXR(FXL * FXR);
+            // Calcular el producto para determinar qué regla aplicar
+            double productoFXL_FXR = FXL * FXR;
+            renglon.setProductoFXL_FXR(productoFXL_FXR);
 
-                if (FXL * FXR < 0) {
-                    XU = XRn;
-                    FXU = FXR;
-                } else {
-                    XL = XRn;
-                    FXL = FXR;
-                }
-
+            // Aplicar las reglas de Cramer 2, 3 y 4
+            if (productoFXL_FXR < 0) {
+                // Regla 2: La raíz está entre XL y XR
+                XU = XRn;
+                FXU = FXR;
+            } else if (productoFXL_FXR > 0) {
+                // Regla 3: La raíz está entre XR y XU
+                XL = XRn;
+                FXL = FXR;
+            } else {
+                // Regla 4: FXR = 0, se encontró la raíz exacta
+                renglon.setEa(0.0); 
                 XRa = XRn;
                 respuestaReglaFalsa.add(renglon);
-
-                if (Ea <= reglafalsa.getEa()) {
-                    break;
-                }
+                break; // Terminar el algoritmo ya que se encontró la raíz exacta
             }
-        } else {
-            respuestaReglaFalsa.add(new ReglaFalsa());
+
+            XRa = XRn;
+            respuestaReglaFalsa.add(renglon);
+
+            // Verificar si se alcanzó la tolerancia deseada
+            if (Ea <= reglafalsa.getEa()) {
+                break;
+            }
         }
-        return respuestaReglaFalsa;
+    } else {
+        // No hay cambio de signo, no se puede aplicar el método
+        ReglaFalsa error = new ReglaFalsa();
+        error.setIteracionesMaximas(-1); 
+        respuestaReglaFalsa.add(error);
     }
+    return respuestaReglaFalsa;
+}
 
     @Override
 
